@@ -256,7 +256,7 @@ body{font-family:'Poppins',sans-serif;font-size:14px;color:#111;background:#fff;
           {/* Header */}
           <div className="bg-gradient-to-br from-[#3D1B78] via-[#5B2A9E] to-[#7742D8] px-5 pt-6 pb-8 mt-4 mx-3 rounded-2xl text-center text-white">
             <img
-              src="/images/design-mode/Cinepolis-Logo.png"
+              src="/images/design-mode/cinepolis.png"
               alt="Cinépolis"
               className="h-9 w-auto mx-auto mb-2"
             />
