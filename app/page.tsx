@@ -3,56 +3,42 @@ import { useState, useEffect, useRef } from "react"
 import type React from "react"
 
 import Image from "next/image"
-import { Button } from "@/components/ui/button"
 import { Carousel, CarouselContent, CarouselItem, type CarouselApi } from "@/components/ui/carousel"
-import { Textarea } from "@/components/ui/textarea"
 import {
-  ChevronRight,
   Download,
   ExternalLink,
   FileText,
   History,
   Instagram,
   Mail,
-  MessageSquare,
-  Phone,
-  Send,
-  Star,
-  User2,
-  Share2,
   Facebook,
-  MapPin,
-  Film,
+  Star,
   Ticket,
-  Clapperboard,
+  Film,
   Armchair,
-  Gift,
+  QrCode,
+  Smartphone,
+  LifeBuoy,
+  Zap,
+  ScanLine,
 } from "lucide-react"
 
 // Indian Rupee formatter
 const fmt = (n: number) =>
   `₹${n.toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
 
+const APP_LINK = "https://onelink.to/bcvnnr"
+
 export default function Home() {
   const [currentSlide, setCurrentSlide] = useState(0)
   const [showTerms, setShowTerms] = useState(false)
   const [showBookingHistory, setShowBookingHistory] = useState(false)
-  const [showReferModal, setShowReferModal] = useState(false)
-  const [showCinemaLocation, setShowCinemaLocation] = useState(false)
   const receiptContainerRef = useRef<HTMLDivElement>(null)
   const [selectedTags, setSelectedTags] = useState<string[]>([])
   const [rating, setRating] = useState(0)
   const [feedbackText, setFeedbackText] = useState("")
   const [feedbackSubmitted, setFeedbackSubmitted] = useState(false)
   const [currentBookingId, setCurrentBookingId] = useState("current")
-
-  // Club Cinépolis loyalty state
-  const [clubForm, setClubForm] = useState({ name: "", mobile: "", email: "" })
-  const [clubSubmitted, setClubSubmitted] = useState(false)
-
-  const customerName = "Aaditya"
-
-  const referButtonRef = useRef<HTMLButtonElement>(null)
 
   const [promoApi, setPromoApi] = useState<CarouselApi>()
 
@@ -162,19 +148,6 @@ export default function Home() {
     { id: "hist2", date: bookings.hist2.date, movie: bookings.hist2.movie, amount: bookings.hist2.total },
   ]
 
-  const handleClubChange = (field: string, value: string) => {
-    setClubForm((prev) => ({ ...prev, [field]: value }))
-  }
-
-  const handleClubSubmit = () => {
-    if (!clubForm.name || !clubForm.mobile) {
-      alert("Please fill in your name and mobile number.")
-      return
-    }
-    setClubSubmitted(true)
-    setTimeout(() => setClubSubmitted(false), 5000)
-  }
-
   const handleFeedbackSubmit = () => {
     if (!rating) {
       alert("Please select a rating before submitting.")
@@ -250,6 +223,7 @@ body{font-family:'Poppins',sans-serif;font-size:14px;color:#111;background:#fff;
 <div class="footer">
   <p><strong>Enjoy the show! See you again at Cinépolis.</strong></p>
   <p>GSTIN: ${currentBooking.gstin} | CIN: ${currentBooking.cin}</p>
+  <p style="margin-top:8px;">Powered by SmartBill</p>
 </div>
 </body>
 </html>
@@ -265,8 +239,8 @@ body{font-family:'Poppins',sans-serif;font-size:14px;color:#111;background:#fff;
     URL.revokeObjectURL(url)
   }
 
-  const handleWhatsApp = () => window.open("https://wa.me/+919620921294", "_blank")
-  const handleCall = () => window.open("tel:+919620921294", "_blank")
+  const handleDownloadApp = () => window.open(APP_LINK, "_blank")
+  const handleNeedHelp = () => window.open("https://wa.me/+919620921294", "_blank")
   const handleEmail = () => window.open("mailto:sagar.p@proenx.com", "_blank")
   const handleSocialLink = (url: string) => window.open(url, "_blank")
 
@@ -279,118 +253,114 @@ body{font-family:'Poppins',sans-serif;font-size:14px;color:#111;background:#fff;
       >
         <div className="flex flex-col w-full gap-3 pb-4 px-3">
 
-          {/* Top Section */}
-          <div className="bg-white rounded-2xl shadow-md border border-gray-200 mt-4 mx-3 overflow-hidden">
+          {/* Header */}
+          <div className="bg-gradient-to-br from-[#3D1B78] via-[#5B2A9E] to-[#7742D8] px-5 pt-6 pb-8 mt-4 mx-3 rounded-2xl text-center text-white">
+            <img
+              src="/images/design-mode/Cinepolis-Logo.png"
+              alt="Cinépolis"
+              className="h-9 w-auto mx-auto mb-2"
+            />
+            <div className="text-xs font-semibold tracking-[0.15em] uppercase opacity-90">{currentBooking.cinema}</div>
+          </div>
 
-            {/* Header */}
-            <div className="bg-gradient-to-br from-[#3D1B78] via-[#5B2A9E] to-[#7742D8] px-5 pt-5 pb-6 text-white">
-              <div className="flex items-start justify-between">
-                <img
-                  src="/images/design-mode/Cinepolis-Logo.png"
-                  alt="Cinépolis"
-                  className="h-10 w-auto bg-white rounded-lg px-2 py-1.5"
-                />
-                <div className="bg-white rounded-xl p-2 shadow-sm">
+          {/* Ticket Stub Card */}
+          <div className="bg-white rounded-2xl shadow-md border border-gray-200 mx-3 -mt-5 overflow-hidden relative">
+
+            {/* Scan to Enter */}
+            <div className="pt-6 pb-5 px-5 text-center">
+              <span className="inline-block bg-[#F9B233] text-black text-[10px] font-bold tracking-wide uppercase px-3 py-1 rounded-full mb-4">
+                <ScanLine className="inline h-3 w-3 mr-1 -mt-0.5" />
+                Scan to Enter
+              </span>
+
+              <div className="flex justify-center">
+                <div className="p-3 border-2 border-[#F9B233] rounded-2xl">
                   <Image
                     src="/images/design-mode/800px-QR_code_for_mobile_English_Wikipedia.svg.png"
                     alt="QR Code"
-                    width={52}
-                    height={52}
+                    width={160}
+                    height={160}
                   />
                 </div>
               </div>
 
-              <div className="mt-3">
-                <div className="text-lg font-semibold">Hey {customerName}, your show is booked!</div>
-                <div className="text-sm opacity-90">{currentBooking.cinema}</div>
+              <div className="mt-4 bg-[#F4EEFD] border border-[#DCC7F5] rounded-xl px-3 py-2.5 text-[11px] text-[#3D1B78] font-medium">
+                Show this QR code at the entrance of the cinema to enter the show.
               </div>
 
-              <div className="mt-4 bg-[#F9B233] rounded-xl p-4 flex justify-between items-center">
+              <div className="mt-4 flex justify-center gap-8 text-left">
                 <div>
-                  <div className="text-xs text-black/70">Amount Paid</div>
-                  <div className="text-3xl font-semibold text-black">{fmt(currentBooking.total)}</div>
+                  <div className="text-[10px] text-gray-400 uppercase tracking-wide">Booking ID</div>
+                  <div className="text-xs font-semibold text-gray-900">{currentBooking.bookingId}</div>
                 </div>
-                <Ticket className="h-7 w-7 text-black/60" />
+                <div>
+                  <div className="text-[10px] text-gray-400 uppercase tracking-wide">Invoice No.</div>
+                  <div className="text-xs font-semibold text-gray-900">{currentBooking.invoiceNo}</div>
+                </div>
               </div>
             </div>
 
-            <div className="p-4 bg-white">
-              <div className="bg-[#F4EEFD] rounded-xl border border-[#DCC7F5] p-3 space-y-2">
-                <div className="flex justify-between items-center">
-                  <span className="text-xs text-gray-500">Booking ID:</span>
-                  <span className="text-sm font-semibold tracking-wide text-right">{currentBooking.bookingId}</span>
+            {/* Perforation / tear line */}
+            <div className="relative">
+              <div className="absolute -left-3 top-1/2 -translate-y-1/2 w-6 h-6 bg-gray-50 rounded-full" />
+              <div className="absolute -right-3 top-1/2 -translate-y-1/2 w-6 h-6 bg-gray-50 rounded-full" />
+              <div className="border-t-2 border-dashed border-gray-200 mx-6" />
+            </div>
+
+            {/* Movie / Booking Info */}
+            <div className="px-5 pt-5 pb-6">
+              <div className="text-[10px] font-bold tracking-[0.15em] uppercase text-[#7742D8] mb-1">Now Showing</div>
+              <div className="text-lg font-bold text-gray-900 leading-snug">{currentBooking.movie}</div>
+              <div className="text-xs text-gray-500 mt-0.5 mb-4">{currentBooking.certification} • {currentBooking.date} | {currentBooking.time}</div>
+
+              <div className="grid grid-cols-3 gap-2 text-center">
+                <div className="bg-gray-50 rounded-xl p-2.5 border border-gray-200">
+                  <Film className="h-4 w-4 text-[#7742D8] mx-auto mb-1" />
+                  <div className="text-[10px] text-gray-500">Screen</div>
+                  <div className="text-sm font-semibold text-gray-900">{currentBooking.screen}</div>
                 </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-xs text-gray-500">Invoice No.:</span>
-                  <span className="text-sm font-semibold text-right">{currentBooking.invoiceNo}</span>
+                <div className="bg-gray-50 rounded-xl p-2.5 border border-gray-200">
+                  <Armchair className="h-4 w-4 text-[#7742D8] mx-auto mb-1" />
+                  <div className="text-[10px] text-gray-500">Seats</div>
+                  <div className="text-sm font-semibold text-gray-900">{currentBooking.seats}</div>
                 </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-xs text-gray-500">Date & Time:</span>
-                  <span className="text-sm font-semibold text-right">{currentBooking.date} | {currentBooking.time}</span>
+                <div className="bg-gray-50 rounded-xl p-2.5 border border-gray-200">
+                  <Ticket className="h-4 w-4 text-[#7742D8] mx-auto mb-1" />
+                  <div className="text-[10px] text-gray-500">Tickets</div>
+                  <div className="text-sm font-semibold text-gray-900">{currentBooking.ticketCount}</div>
                 </div>
               </div>
             </div>
           </div>
 
-          {/* Movie & Booking Details */}
-          <div className="bg-white rounded-2xl shadow-md border border-gray-200 mt-4 mx-3 p-4">
-            <div className="flex items-center mb-3">
-              <div className="bg-[#3D1B78] p-2 rounded-lg mr-3">
-                <Clapperboard className="h-4 w-4 text-[#F9B233]" />
-              </div>
-              <h3 className="text-base font-semibold text-gray-900">Booking Details</h3>
-            </div>
-
-            <div className="bg-[#F4EEFD] rounded-xl p-3 border border-[#DCC7F5] mb-3">
-              <div className="font-semibold text-sm text-gray-900">{currentBooking.movie}</div>
-              <div className="text-xs text-gray-500 mt-0.5">{currentBooking.certification}</div>
-            </div>
-
-            <div className="grid grid-cols-3 gap-2 text-center">
-              <div className="bg-gray-50 rounded-xl p-2.5 border border-gray-200">
-                <Film className="h-4 w-4 text-[#7742D8] mx-auto mb-1" />
-                <div className="text-[10px] text-gray-500">Screen</div>
-                <div className="text-sm font-semibold text-gray-900">{currentBooking.screen}</div>
-              </div>
-              <div className="bg-gray-50 rounded-xl p-2.5 border border-gray-200">
-                <Armchair className="h-4 w-4 text-[#7742D8] mx-auto mb-1" />
-                <div className="text-[10px] text-gray-500">Seats</div>
-                <div className="text-sm font-semibold text-gray-900">{currentBooking.seats}</div>
-              </div>
-              <div className="bg-gray-50 rounded-xl p-2.5 border border-gray-200">
-                <Ticket className="h-4 w-4 text-[#7742D8] mx-auto mb-1" />
-                <div className="text-[10px] text-gray-500">Tickets</div>
-                <div className="text-sm font-semibold text-gray-900">{currentBooking.ticketCount}</div>
-              </div>
-            </div>
-
-            {/* Cost Breakup */}
-            <div className="mt-5 pt-4 border-t border-gray-200 space-y-2 text-sm">
-              <div className="text-[11px] font-semibold text-gray-400 uppercase tracking-wide mb-1">Cost Breakup</div>
+          {/* Cost Breakdown */}
+          <div className="bg-white rounded-2xl shadow-md border border-gray-200 mx-3 p-4">
+            <div className="text-[11px] font-semibold text-gray-400 uppercase tracking-wide mb-3">Amount Breakup</div>
+            <div className="space-y-2 text-sm">
               <div className="flex justify-between"><span className="text-gray-600">Ticket Price</span><span>{fmt(currentBooking.ticketPrice)}</span></div>
               <div className="flex justify-between"><span className="text-gray-600">Net Ticket Price</span><span>{fmt(currentBooking.netTicketPrice)}</span></div>
               <div className="flex justify-between"><span className="text-gray-600">CGST (9%)</span><span>{fmt(currentBooking.cgst)}</span></div>
               <div className="flex justify-between"><span className="text-gray-600">SGST (9%)</span><span>{fmt(currentBooking.sgst)}</span></div>
-              <div className="flex justify-between text-base font-semibold pt-2 border-t border-gray-200">
-                <span>Total Amount Paid</span><span className="text-[#3D1B78]">{fmt(currentBooking.total)}</span>
+              <div className="flex justify-between text-base font-bold pt-2 border-t border-gray-200">
+                <span className="text-gray-900">Total Amount Paid</span><span className="text-[#3D1B78]">{fmt(currentBooking.total)}</span>
               </div>
             </div>
           </div>
 
           {/* Promo Banners — 1600x485 aspect ratio */}
-          <div className="bg-white rounded-2xl border border-gray-200 shadow-md overflow-hidden mx-3 mt-4 relative">
+          <div className="bg-white rounded-2xl border border-gray-200 shadow-md overflow-hidden mx-3 relative">
             <Carousel className="w-full" setApi={setPromoApi} opts={{ loop: true }}>
               <CarouselContent>
                 <CarouselItem>
                   <div className="relative w-full aspect-[1600/485] bg-[#F4EEFD]">
-                    <a href="https://www.instagram.com" target="_blank" rel="noopener noreferrer" className="absolute inset-0">
+                    <a href="https://www.instagram.com/cinepolisindia/?hl=en" target="_blank" rel="noopener noreferrer" className="absolute inset-0">
                       <Image src="/images/design-mode/cinepolis-ticket-banner-1.png" alt="Now Showing at Cinépolis" fill className="object-cover" priority />
                     </a>
                   </div>
                 </CarouselItem>
                 <CarouselItem>
                   <div className="relative w-full aspect-[1600/485] bg-[#F4EEFD]">
-                    <a href="https://www.instagram.com" target="_blank" rel="noopener noreferrer" className="absolute inset-0">
+                    <a href="https://www.instagram.com/cinepolisindia/?hl=en" target="_blank" rel="noopener noreferrer" className="absolute inset-0">
                       <Image src="/images/design-mode/cinepolis-ticket-banner-2.png" alt="Cinépolis Promotion" fill className="object-cover" />
                     </a>
                   </div>
@@ -405,76 +375,8 @@ body{font-family:'Poppins',sans-serif;font-size:14px;color:#111;background:#fff;
             </Carousel>
           </div>
 
-          {/* Club Cinépolis Loyalty */}
-          <div className="bg-white rounded-2xl border border-gray-200 shadow-md mx-3 mt-4 p-4">
-            {clubSubmitted ? (
-              <div className="text-center py-6 bg-green-50 rounded-xl border border-green-100">
-                <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-3">
-                  <svg className="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M5 13l4 4L19 7"></path>
-                  </svg>
-                </div>
-                <div className="text-sm font-semibold text-gray-900 mb-1">Welcome to Club Cinépolis!</div>
-                <div className="text-xs text-gray-500">Your membership confirmation is on its way to your email.</div>
-              </div>
-            ) : (
-              <div className="space-y-4">
-                <div className="flex items-center mb-1">
-                  <div className="bg-[#3D1B78] p-2 rounded-lg mr-3">
-                    <Star className="h-4 w-4 text-[#F9B233]" />
-                  </div>
-                  <div>
-                    <h3 className="text-sm font-semibold text-gray-900">Join Club Cinépolis</h3>
-                    <p className="text-[11px] text-gray-500">Earn points on every ticket & unlock pre-screening invites</p>
-                  </div>
-                </div>
-
-                <div className="space-y-3">
-                  <div className="space-y-1">
-                    <label className="text-[11px] font-semibold text-gray-400 uppercase tracking-wide">Full Name</label>
-                    <input
-                      type="text"
-                      placeholder="e.g. Aaditya Sharma"
-                      value={clubForm.name}
-                      onChange={(e) => handleClubChange("name", e.target.value)}
-                      className="w-full p-2.5 text-sm border border-gray-200 rounded-xl focus:ring-1 focus:ring-[#7742D8] focus:border-[#7742D8] outline-none"
-                    />
-                  </div>
-                  <div className="space-y-1">
-                    <label className="text-[11px] font-semibold text-gray-400 uppercase tracking-wide">Mobile Number</label>
-                    <input
-                      type="tel"
-                      placeholder="e.g. 98XXX XXXXX"
-                      value={clubForm.mobile}
-                      onChange={(e) => handleClubChange("mobile", e.target.value)}
-                      className="w-full p-2.5 text-sm border border-gray-200 rounded-xl focus:ring-1 focus:ring-[#7742D8] focus:border-[#7742D8] outline-none"
-                    />
-                  </div>
-                  <div className="space-y-1">
-                    <label className="text-[11px] font-semibold text-gray-400 uppercase tracking-wide">Email Address</label>
-                    <input
-                      type="email"
-                      placeholder="e.g. name@email.com"
-                      value={clubForm.email}
-                      onChange={(e) => handleClubChange("email", e.target.value)}
-                      className="w-full p-2.5 text-sm border border-gray-200 rounded-xl focus:ring-1 focus:ring-[#7742D8] focus:border-[#7742D8] outline-none"
-                    />
-                  </div>
-                </div>
-
-                <button
-                  className="w-full bg-[#F9B233] hover:bg-[#e8a422] text-black h-10 text-xs font-semibold rounded-xl transition active:scale-[0.98]"
-                  onClick={handleClubSubmit}
-                >
-                  Join Club Cinépolis
-                </button>
-                <p className="text-[10px] text-center text-gray-400">Free to join. Earn points on tickets and F&B, redeemable across India.</p>
-              </div>
-            )}
-          </div>
-
           {/* Rate Experience */}
-          <div className="bg-white rounded-2xl border border-gray-200 shadow-md mx-3 mt-4 p-4">
+          <div className="bg-white rounded-2xl border border-gray-200 shadow-md mx-3 p-4">
             {feedbackSubmitted ? (
               <div className="text-center py-6 bg-green-50 rounded-xl border border-green-100">
                 <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-3">
@@ -487,14 +389,7 @@ body{font-family:'Poppins',sans-serif;font-size:14px;color:#111;background:#fff;
               </div>
             ) : (
               <div className="space-y-4">
-                <div className="flex items-center">
-                  <div className="bg-[#3D1B78] p-2 rounded-lg mr-3">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className="w-4 h-4 text-[#F9B233]" fill="currentColor">
-                      <path d="M11.5 2C7 2 3.5 5.3 3.5 9.5c0 2.4 1.2 4.4 3.1 5.7L6 22l5.1-2.6c.5.1 1 .1 1.5.1 4.5 0 8-3.3 8-7.5S16 2 11.5 2z" />
-                    </svg>
-                  </div>
-                  <h3 className="text-base font-semibold text-gray-900">Rate Your Experience</h3>
-                </div>
+                <h3 className="text-base font-semibold text-gray-900 text-center">Rate Your Experience</h3>
 
                 <div className="flex justify-center gap-3 py-1">
                   {[1, 2, 3, 4, 5].map((star) => (
@@ -513,11 +408,11 @@ body{font-family:'Poppins',sans-serif;font-size:14px;color:#111;background:#fff;
 
                 {rating > 0 && (
                   <div className="space-y-2">
-                    <div className="text-[11px] font-semibold text-gray-500 uppercase tracking-wide">Tell us more</div>
-                    <div className="flex flex-wrap gap-2">
+                    <div className="text-[11px] font-semibold text-gray-500 uppercase tracking-wide text-center">Tell us more</div>
+                    <div className="flex flex-wrap gap-2 justify-center">
                       {(rating >= 4
-                        ? ["Great picture quality", "Comfortable seating", "Clean auditorium", "Smooth entry", "Friendly staff"]
-                        : ["Screen/sound issue", "Seating issue", "Long queue", "AC not working", "Staff behaviour"]
+                        ? ["Great picture quality", "Comfortable seating", "Clean auditorium", "Smooth entry"]
+                        : ["Screen/sound issue", "Seating issue", "Long queue", "Staff behaviour"]
                       ).map((item) => (
                         <button key={item}
                           onClick={() => setSelectedTags((prev) => prev.includes(item) ? prev.filter((tag) => tag !== item) : [...prev, item])}
@@ -529,12 +424,9 @@ body{font-family:'Poppins',sans-serif;font-size:14px;color:#111;background:#fff;
                   </div>
                 )}
 
-                <div className="space-y-1">
-                  <label className="text-[11px] font-semibold text-gray-400 uppercase tracking-wide">Additional Feedback (Optional)</label>
-                  <textarea rows={3} placeholder="Tell us about your show experience"
-                    className="w-full p-3 text-xs border border-gray-200 rounded-xl focus:ring-1 focus:ring-[#7742D8] focus:border-[#7742D8] outline-none resize-none"
-                    value={feedbackText} onChange={(e) => setFeedbackText(e.target.value)} />
-                </div>
+                <textarea rows={2} placeholder="Additional feedback (optional)"
+                  className="w-full p-3 text-xs border border-gray-200 rounded-xl focus:ring-1 focus:ring-[#7742D8] focus:border-[#7742D8] outline-none resize-none"
+                  value={feedbackText} onChange={(e) => setFeedbackText(e.target.value)} />
 
                 <button className="w-full bg-[#F9B233] hover:bg-[#e8a422] text-black h-10 text-xs font-semibold rounded-xl transition active:scale-[0.98]"
                   onClick={handleFeedbackSubmit} disabled={!rating}>
@@ -544,8 +436,26 @@ body{font-family:'Poppins',sans-serif;font-size:14px;color:#111;background:#fff;
             )}
           </div>
 
+          {/* Download App CTA */}
+          <div className="bg-gradient-to-br from-[#3D1B78] via-[#5B2A9E] to-[#7742D8] rounded-2xl shadow-md mx-3 p-5 text-white">
+            <div className="flex items-center">
+              <div className="bg-white/15 p-3 rounded-xl mr-4">
+                <Smartphone className="h-6 w-6 text-[#F9B233]" />
+              </div>
+              <div className="flex-1">
+                <div className="text-sm font-semibold">Get the Cinépolis App</div>
+                <div className="text-[11px] opacity-80">Book faster, pre-order snacks & manage bookings on the go</div>
+              </div>
+            </div>
+            <button onClick={handleDownloadApp}
+              className="w-full mt-4 bg-[#F9B233] hover:bg-[#e8a422] text-black h-10 text-xs font-bold rounded-xl transition active:scale-[0.98] flex items-center justify-center gap-2">
+              <Download className="h-4 w-4" />
+              Download App
+            </button>
+          </div>
+
           {/* Quick Actions */}
-          <div className="bg-white rounded-2xl border border-gray-200 shadow-md mx-3 mt-4 p-4">
+          <div className="bg-white rounded-2xl border border-gray-200 shadow-md mx-3 p-4">
             <div className="grid grid-cols-3 gap-3">
               <button onClick={() => setShowBookingHistory(true)}
                 className="flex flex-col items-center justify-center bg-[#F4EEFD] border border-[#DCC7F5] rounded-xl py-3 active:scale-[0.98]">
@@ -559,93 +469,66 @@ body{font-family:'Poppins',sans-serif;font-size:14px;color:#111;background:#fff;
               </button>
               <button onClick={handleDownloadReceipt}
                 className="flex flex-col items-center justify-center bg-[#F4EEFD] border border-[#DCC7F5] rounded-xl py-3 active:scale-[0.98]">
-                <Download className="h-5 w-5 text-[#3D1B78] mb-1" />
-                <span className="text-[11px] font-medium text-gray-700">Download</span>
+                <FileText className="h-5 w-5 text-[#3D1B78] mb-1" />
+                <span className="text-[11px] font-medium text-gray-700">Invoice</span>
               </button>
             </div>
           </div>
 
-          {/* Support */}
-          <div className="bg-white rounded-2xl border border-gray-200 shadow-md mx-3 mt-4 p-4">
-            <div className="flex items-center mb-3">
-              <div className="bg-[#3D1B78] p-2 rounded-lg mr-3">
-                <Send className="h-4 w-4 text-[#F9B233]" />
-              </div>
-              <h3 className="text-sm font-semibold text-gray-900">Cinépolis Support</h3>
-            </div>
-            <div className="grid grid-cols-3 gap-3">
-              <button onClick={handleWhatsApp} className="flex flex-col items-center justify-center bg-[#F4EEFD] border border-[#DCC7F5] rounded-xl py-3 active:scale-[0.98]">
-                <MessageSquare className="h-5 w-5 text-[#3D1B78] mb-1" />
-                <span className="text-[11px] font-medium text-gray-700">Chat</span>
-              </button>
-              <button onClick={handleCall} className="flex flex-col items-center justify-center bg-[#F4EEFD] border border-[#DCC7F5] rounded-xl py-3 active:scale-[0.98]">
-                <Phone className="h-5 w-5 text-[#3D1B78] mb-1" />
-                <span className="text-[11px] font-medium text-gray-700">Call</span>
-              </button>
-              <button onClick={handleEmail} className="flex flex-col items-center justify-center bg-[#F4EEFD] border border-[#DCC7F5] rounded-xl py-3 active:scale-[0.98]">
-                <Mail className="h-5 w-5 text-[#3D1B78] mb-1" />
-                <span className="text-[11px] font-medium text-gray-700">Email</span>
-              </button>
-            </div>
-          </div>
-
-          {/* Stay Connected + Terms */}
-          <div className="bg-white rounded-2xl border border-gray-200 shadow-md mx-3 mt-4 p-4">
-            <div className="flex items-center mb-4">
-              <div className="bg-[#3D1B78] p-2 rounded-lg mr-3">
-                <Share2 className="h-4 w-4 text-[#F9B233]" />
-              </div>
-              <h3 className="text-sm font-semibold text-gray-900">Stay Connected</h3>
-            </div>
-
-            <div className="flex justify-center space-x-6 mb-4">
-              <button onClick={() => handleSocialLink("https://www.instagram.com")} className="flex flex-col items-center">
-                <div className="w-9 h-9 rounded-full bg-gradient-to-tr from-yellow-400 via-pink-500 to-purple-500 flex items-center justify-center mb-1">
-                  <Instagram className="h-4 w-4 text-white" />
-                </div>
-                <span className="text-[11px] font-medium text-gray-700">Instagram</span>
-              </button>
-              <button onClick={() => handleSocialLink("https://www.facebook.com")} className="flex flex-col items-center">
-                <div className="w-9 h-9 rounded-full bg-[#1877F2] flex items-center justify-center mb-1">
-                  <Facebook className="h-4 w-4 text-white" />
-                </div>
-                <span className="text-[11px] font-medium text-gray-700">Facebook</span>
-              </button>
-              <button onClick={() => handleSocialLink("https://www.cinepolisindia.com")} className="flex flex-col items-center">
-                <div className="w-9 h-9 rounded-full bg-[#3D1B78] flex items-center justify-center mb-1">
-                  <ExternalLink className="h-4 w-4 text-[#F9B233]" />
-                </div>
-                <span className="text-[11px] font-medium text-gray-700">Website</span>
-              </button>
-            </div>
-
-            <div className="text-xs text-gray-600 text-center mb-3 bg-gray-50 p-3 rounded-xl">
-              <button onClick={() => setShowCinemaLocation(!showCinemaLocation)}
-                className="w-full flex items-center justify-center mb-2 hover:text-[#3D1B78] transition-colors">
-                <MapPin className="h-3 w-3 mr-1 text-[#3D1B78]" />
-                <span className="font-semibold text-[#3D1B78]">{currentBooking.cinema} {showCinemaLocation ? "▲" : "▼"}</span>
-              </button>
-              {showCinemaLocation && (
-                <div className="space-y-0.5">
-                  <p className="font-semibold text-gray-900">Cinépolis India</p>
-                  <p>{currentBooking.cinema}</p>
-                  <p className="mt-2 text-[10px]">GSTIN: {currentBooking.gstin} | HSN: {currentBooking.hsn}</p>
-                  <p className="mt-1 text-[10px]">CIN: {currentBooking.cin}</p>
-                </div>
-              )}
-            </div>
-
-            <button className="w-full text-xs text-gray-500 hover:text-[#3D1B78] h-6 font-medium" onClick={() => setShowTerms(!showTerms)}>
-              Terms & Conditions {showTerms ? "▲" : "▼"}
+          {/* Help row — Terms & Need Help */}
+          <div className="mx-3 grid grid-cols-2 gap-3">
+            <button onClick={() => setShowTerms(!showTerms)}
+              className="bg-white border border-gray-200 rounded-full py-2.5 text-xs font-semibold text-gray-700 shadow-sm active:scale-[0.98]">
+              Terms & Conditions
             </button>
-            {showTerms && (
-              <div className="text-[11px] text-gray-500 mt-2 space-y-1 px-2 font-medium">
-                <p>• Tickets once booked cannot be exchanged or refunded, subject to cinema policy.</p>
-                <p>• Please carry a valid ID proof matching the age certification of the film.</p>
-                <p>• Club Cinépolis points are valid for redemption till 31st December every year.</p>
-                <p>• For support visit www.cinepolisindia.com.</p>
+            <button onClick={handleNeedHelp}
+              className="bg-white border border-gray-200 rounded-full py-2.5 text-xs font-semibold text-gray-700 shadow-sm active:scale-[0.98] flex items-center justify-center gap-1.5">
+              <LifeBuoy className="h-3.5 w-3.5" />
+              Need help?
+            </button>
+          </div>
+
+          {showTerms && (
+            <div className="bg-white rounded-2xl border border-gray-200 shadow-md mx-3 p-4 text-[11px] text-gray-500 space-y-1 font-medium">
+              <p>• Tickets once booked cannot be exchanged or refunded, subject to cinema policy.</p>
+              <p>• Please carry a valid ID proof matching the age certification of the film.</p>
+              <p>• Entry is permitted only against a valid QR code shown at the ticket counter.</p>
+              <p>• For support visit www.cinepolisindia.com.</p>
+            </div>
+          )}
+
+          {/* GST / CIN */}
+          <div className="mx-3 text-center text-[10px] text-gray-400 leading-relaxed">
+            CIN: {currentBooking.cin}<br />
+            GSTIN: {currentBooking.gstin} / HSN: {currentBooking.hsn}
+          </div>
+
+          {/* Stay Connected */}
+          <div className="flex justify-center gap-6 mx-3">
+            <button onClick={() => handleSocialLink("https://www.instagram.com/cinepolisindia/?hl=en")} className="flex flex-col items-center">
+              <div className="w-9 h-9 rounded-full bg-gradient-to-tr from-yellow-400 via-pink-500 to-purple-500 flex items-center justify-center mb-1">
+                <Instagram className="h-4 w-4 text-white" />
               </div>
-            )}
+              <span className="text-[10px] font-medium text-gray-600">Instagram</span>
+            </button>
+            <button onClick={() => handleSocialLink("https://www.facebook.com/CinepolisIndia")} className="flex flex-col items-center">
+              <div className="w-9 h-9 rounded-full bg-[#1877F2] flex items-center justify-center mb-1">
+                <Facebook className="h-4 w-4 text-white" />
+              </div>
+              <span className="text-[10px] font-medium text-gray-600">Facebook</span>
+            </button>
+            <button onClick={() => handleSocialLink("https://www.cinepolisindia.com")} className="flex flex-col items-center">
+              <div className="w-9 h-9 rounded-full bg-[#3D1B78] flex items-center justify-center mb-1">
+                <ExternalLink className="h-4 w-4 text-[#F9B233]" />
+              </div>
+              <span className="text-[10px] font-medium text-gray-600">Website</span>
+            </button>
+          </div>
+
+          {/* Powered By footer */}
+          <div className="flex items-center justify-center gap-1.5 py-2 text-gray-400">
+            <Zap className="h-3 w-3 fill-gray-300" />
+            <span className="text-[10px] font-medium">Digital billing powered by <span className="font-bold text-gray-500">SmartBill</span></span>
           </div>
 
           <div id="height-marker" style={{ height: "1px" }} />
