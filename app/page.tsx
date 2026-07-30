@@ -29,21 +29,6 @@ const fmt = (n: number) =>
 
 const APP_LINK = "https://onelink.to/bcvnnr"
 
-// CSS mask that punches small circular notches down the left & right edges — a real cut,
-// not a color-matching trick, so it renders correctly regardless of what's behind it.
-const ticketNotchMask: React.CSSProperties = {
-  WebkitMaskImage:
-    "radial-gradient(circle 7px at 0 11px, transparent 7px, black 7.5px), radial-gradient(circle 7px at 100% 11px, transparent 7px, black 7.5px)",
-  WebkitMaskSize: "100% 22px, 100% 22px",
-  WebkitMaskRepeat: "repeat-y, repeat-y",
-  WebkitMaskPosition: "left top, right top",
-  maskImage:
-    "radial-gradient(circle 7px at 0 11px, transparent 7px, black 7.5px), radial-gradient(circle 7px at 100% 11px, transparent 7px, black 7.5px)",
-  maskSize: "100% 22px, 100% 22px",
-  maskRepeat: "repeat-y, repeat-y",
-  maskPosition: "left top, right top",
-}
-
 // Circular scalloped "PAID" stamp — brand purple
 function PaidStamp() {
   return (
@@ -71,37 +56,22 @@ function PaidStamp() {
   )
 }
 
-function TicketClipDefs() {
-  // Generates a scalloped-edge clip-path with notches every 22px down both sides.
-  // cardHeight should roughly match the actual rendered card height.
-  const notchRadius = 7
-  const spacing = 22
-  const cardHeight = 900 // generous estimate; SVG viewBox scales to container via preserveAspectRatio="none"
-
-  const notchCount = Math.ceil(cardHeight / spacing)
-  let leftPath = `M 0,0 `
-  let rightPath = ``
-
-  for (let i = 0; i <= notchCount; i++) {
-    const y = i * spacing
-    leftPath += `L 0,${y - notchRadius} A ${notchRadius},${notchRadius} 0 0 0 0,${y + notchRadius} `
-  }
-  leftPath += `L 0,${cardHeight} L 1000,${cardHeight} `
-
-  for (let i = notchCount; i >= 0; i--) {
-    const y = i * spacing
-    rightPath += `L 1000,${y + notchRadius} A ${notchRadius},${notchRadius} 0 0 0 1000,${y - notchRadius} `
-  }
-  rightPath += `L 1000,0 Z`
-
+// Repeats the small ticket.png notch tile vertically down one edge of the card.
+// The tile itself never stretches — it just repeats (tiles) as many times as needed
+// to cover the card's full height, so it works no matter how tall the card grows.
+function TicketNotchStrip({ side }: { side: "left" | "right" }) {
   return (
-    <svg width="0" height="0" style={{ position: "absolute" }}>
-      <defs>
-        <clipPath id="ticketNotchClip" clipPathUnits="userSpaceOnUse">
-          <path d={leftPath + rightPath} />
-        </clipPath>
-      </defs>
-    </svg>
+    <div
+      className="absolute top-0 bottom-0 w-3 z-20 pointer-events-none"
+      style={{
+        [side]: 0,
+        backgroundImage: "url(/images/design-mode/ticket.png)",
+        backgroundRepeat: "repeat-y",
+        backgroundSize: "12px 22px",
+        backgroundPosition: side === "left" ? "left top" : "right top",
+        transform: side === "right" ? "scaleX(-1)" : "none",
+      }}
+    />
   )
 }
 
@@ -345,8 +315,6 @@ body{font-family:'Poppins',sans-serif;font-size:14px;color:#111;background:#fff;
       >
         <div className="flex flex-col w-full gap-3 pb-4 px-3">
 
-            <TicketClipDefs />
-
           {/* Header */}
           <div className="bg-gradient-to-br from-[#3D1B78] via-[#5B2A9E] to-[#7742D8] px-5 pt-6 pb-8 mt-4 mx-3 rounded-2xl text-center text-white">
             <img
@@ -381,11 +349,14 @@ body{font-family:'Poppins',sans-serif;font-size:14px;color:#111;background:#fff;
             </Carousel>
           </div>
 
-          {/* Ticket Stub + Amount Breakup — punched-notch movie-ticket card (real CSS mask cut) */}
+          {/* Ticket Stub + Amount Breakup — punched-notch movie-ticket card (image-tile notches) */}
           <div
             className="bg-white shadow-md border border-gray-200 mx-3 relative"
-              style={{ clipPath: "url(#ticketNotchClip)", borderRadius: "20px" }}
+            style={{ borderRadius: "20px" }}
           >
+            <TicketNotchStrip side="left" />
+            <TicketNotchStrip side="right" />
+
             {/* Scan to Enter */}
             <div className="pt-6 pb-5 px-5 text-center">
               <span className="inline-block bg-[#F9B233] text-black text-[10px] font-bold tracking-wide uppercase px-3 py-1 rounded-full mb-4">
