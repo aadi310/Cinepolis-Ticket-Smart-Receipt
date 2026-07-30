@@ -285,12 +285,12 @@ body{font-family:'Poppins',sans-serif;font-size:14px;color:#111;background:#fff;
   const handleSocialLink = (url: string) => window.open(url, "_blank")
 
   return (
-    // Slightly darker container background (#E8EAEF) so punch holes show clearly
-    <div className="min-h-screen bg-[#E8EAEF] flex justify-center py-4">
+    // overflow-x-hidden strictly prevents horizontal scroll jitter
+    <div className="min-h-screen bg-[#E8EAEF] flex justify-center py-4 overflow-x-hidden">
       <div
         id="receipt-root"
         ref={receiptContainerRef}
-        className="w-full max-w-md mx-auto bg-[#E8EAEF] relative font-poppins"
+        className="w-full max-w-md mx-auto bg-[#E8EAEF] relative font-poppins overflow-x-hidden"
       >
         <div className="flex flex-col w-full gap-3 pb-4 px-3">
           {/* Header */}
@@ -327,7 +327,7 @@ body{font-family:'Poppins',sans-serif;font-size:14px;color:#111;background:#fff;
             </Carousel>
           </div>
 
-          {/* Vertical Movie Ticket Card with Physical Punch Cutouts */}
+          {/* Vertical Movie Ticket Card */}
           <div className="mx-3 relative filter drop-shadow-md">
             <div className="bg-white rounded-2xl border border-gray-200 relative overflow-hidden">
               
@@ -365,13 +365,11 @@ body{font-family:'Poppins',sans-serif;font-size:14px;color:#111;background:#fff;
                 </div>
               </div>
 
-              {/* Perforation Line 1 with Direct Punch-Holes */}
-              <div className="relative flex items-center my-1">
-                {/* Left Hole */}
-                <div className="w-5 h-5 bg-[#E8EAEF] rounded-full -ml-2.5 shadow-inner border-r border-gray-300/60 shrink-0 z-10" />
-                <div className="flex-1 border-t-2 border-dashed border-gray-300 mx-2" />
-                {/* Right Hole */}
-                <div className="w-5 h-5 bg-[#E8EAEF] rounded-full -mr-2.5 shadow-inner border-l border-gray-300/60 shrink-0 z-10" />
+              {/* Perforation Line 1 with Direct Punch-Holes (Contained) */}
+              <div className="relative flex items-center justify-between my-1 w-full overflow-hidden">
+                <div className="w-5 h-5 bg-[#E8EAEF] rounded-full -translate-x-1/2 border-r border-gray-300/60 shrink-0 z-10" />
+                <div className="flex-1 border-t-2 border-dashed border-gray-300 mx-1" />
+                <div className="w-5 h-5 bg-[#E8EAEF] rounded-full translate-x-1/2 border-l border-gray-300/60 shrink-0 z-10" />
               </div>
 
               {/* Middle Section / Movie Details */}
@@ -399,13 +397,11 @@ body{font-family:'Poppins',sans-serif;font-size:14px;color:#111;background:#fff;
                 </div>
               </div>
 
-              {/* Perforation Line 2 with Direct Punch-Holes */}
-              <div className="relative flex items-center my-1">
-                {/* Left Hole */}
-                <div className="w-5 h-5 bg-[#E8EAEF] rounded-full -ml-2.5 shadow-inner border-r border-gray-300/60 shrink-0 z-10" />
-                <div className="flex-1 border-t-2 border-dashed border-gray-300 mx-2" />
-                {/* Right Hole */}
-                <div className="w-5 h-5 bg-[#E8EAEF] rounded-full -mr-2.5 shadow-inner border-l border-gray-300/60 shrink-0 z-10" />
+              {/* Perforation Line 2 with Direct Punch-Holes (Contained) */}
+              <div className="relative flex items-center justify-between my-1 w-full overflow-hidden">
+                <div className="w-5 h-5 bg-[#E8EAEF] rounded-full -translate-x-1/2 border-r border-gray-300/60 shrink-0 z-10" />
+                <div className="flex-1 border-t-2 border-dashed border-gray-300 mx-1" />
+                <div className="w-5 h-5 bg-[#E8EAEF] rounded-full translate-x-1/2 border-l border-gray-300/60 shrink-0 z-10" />
               </div>
 
               {/* Bottom Section / Amount Breakup */}
