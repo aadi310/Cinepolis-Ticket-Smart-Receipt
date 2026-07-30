@@ -285,14 +285,15 @@ body{font-family:'Poppins',sans-serif;font-size:14px;color:#111;background:#fff;
   const handleSocialLink = (url: string) => window.open(url, "_blank")
 
   return (
-    // overflow-x-hidden strictly prevents horizontal scroll jitter
+    // Outer page is soft gray (#E8EAEF)
     <div className="min-h-screen bg-[#E8EAEF] flex justify-center py-4 overflow-x-hidden">
+      {/* Center column card layout is WHITE (bg-white) */}
       <div
         id="receipt-root"
         ref={receiptContainerRef}
-        className="w-full max-w-md mx-auto bg-[#E8EAEF] relative font-poppins overflow-x-hidden"
+        className="w-full max-w-md mx-auto bg-white rounded-3xl shadow-sm border border-gray-200/80 relative font-poppins overflow-x-hidden"
       >
-        <div className="flex flex-col w-full gap-3 pb-4 px-3">
+        <div className="flex flex-col w-full gap-3 py-4 px-3">
           {/* Header */}
           <div className="bg-gradient-to-br from-[#3D1B78] via-[#5B2A9E] to-[#7742D8] px-5 pt-6 pb-8 mx-3 rounded-2xl text-center text-white shadow-sm">
             <img
@@ -365,7 +366,7 @@ body{font-family:'Poppins',sans-serif;font-size:14px;color:#111;background:#fff;
                 </div>
               </div>
 
-              {/* Perforation Line 1 with Direct Punch-Holes (Contained) */}
+              {/* Perforation Line 1 with Direct Punch-Holes matching outer background (#E8EAEF) */}
               <div className="relative flex items-center justify-between my-1 w-full overflow-hidden">
                 <div className="w-5 h-5 bg-[#E8EAEF] rounded-full -translate-x-1/2 border-r border-gray-300/60 shrink-0 z-10" />
                 <div className="flex-1 border-t-2 border-dashed border-gray-300 mx-1" />
@@ -397,7 +398,7 @@ body{font-family:'Poppins',sans-serif;font-size:14px;color:#111;background:#fff;
                 </div>
               </div>
 
-              {/* Perforation Line 2 with Direct Punch-Holes (Contained) */}
+              {/* Perforation Line 2 with Direct Punch-Holes matching outer background (#E8EAEF) */}
               <div className="relative flex items-center justify-between my-1 w-full overflow-hidden">
                 <div className="w-5 h-5 bg-[#E8EAEF] rounded-full -translate-x-1/2 border-r border-gray-300/60 shrink-0 z-10" />
                 <div className="flex-1 border-t-2 border-dashed border-gray-300 mx-1" />
@@ -556,44 +557,47 @@ body{font-family:'Poppins',sans-serif;font-size:14px;color:#111;background:#fff;
             </div>
           )}
 
-          {/* GST / CIN */}
-          <div className="mx-3 text-center text-[10px] text-gray-400 leading-relaxed">
-            CIN: {currentBooking.cin}<br />
-            GSTIN: {currentBooking.gstin} / HSN: {currentBooking.hsn}
-          </div>
+          {/* Consolidated Bottom Footer Section inside a clean White Card */}
+          <div className="bg-white rounded-2xl border border-gray-200 shadow-md mx-3 p-5 space-y-4">
+            {/* GST / CIN */}
+            <div className="text-center text-[10px] text-gray-400 leading-relaxed border-b border-gray-100 pb-3">
+              CIN: {currentBooking.cin}<br />
+              GSTIN: {currentBooking.gstin} / HSN: {currentBooking.hsn}
+            </div>
 
-          {/* Stay Connected */}
-          <div className="flex justify-center gap-6 mx-3">
-            <button onClick={() => handleSocialLink("https://www.instagram.com/cinepolisindia/?hl=en")} className="flex flex-col items-center">
-              <div className="w-9 h-9 rounded-full bg-gradient-to-tr from-yellow-400 via-pink-500 to-purple-500 flex items-center justify-center mb-1">
-                <Instagram className="h-4 w-4 text-white" />
-              </div>
-              <span className="text-[10px] font-medium text-gray-600">Instagram</span>
-            </button>
-            <button onClick={() => handleSocialLink("https://www.facebook.com/CinepolisIndia")} className="flex flex-col items-center">
-              <div className="w-9 h-9 rounded-full bg-[#1877F2] flex items-center justify-center mb-1">
-                <Facebook className="h-4 w-4 text-white" />
-              </div>
-              <span className="text-[10px] font-medium text-gray-600">Facebook</span>
-            </button>
-            <button onClick={() => handleSocialLink("https://www.cinepolisindia.com")} className="flex flex-col items-center">
-              <div className="w-9 h-9 rounded-full bg-[#3D1B78] flex items-center justify-center mb-1">
-                <ExternalLink className="h-4 w-4 text-[#F9B233]" />
-              </div>
-              <span className="text-[10px] font-medium text-gray-600">Website</span>
-            </button>
-          </div>
+            {/* Stay Connected */}
+            <div className="flex justify-center gap-6">
+              <button onClick={() => handleSocialLink("https://www.instagram.com/cinepolisindia/?hl=en")} className="flex flex-col items-center">
+                <div className="w-9 h-9 rounded-full bg-gradient-to-tr from-yellow-400 via-pink-500 to-purple-500 flex items-center justify-center mb-1">
+                  <Instagram className="h-4 w-4 text-white" />
+                </div>
+                <span className="text-[10px] font-medium text-gray-600">Instagram</span>
+              </button>
+              <button onClick={() => handleSocialLink("https://www.facebook.com/CinepolisIndia")} className="flex flex-col items-center">
+                <div className="w-9 h-9 rounded-full bg-[#1877F2] flex items-center justify-center mb-1">
+                  <Facebook className="h-4 w-4 text-white" />
+                </div>
+                <span className="text-[10px] font-medium text-gray-600">Facebook</span>
+              </button>
+              <button onClick={() => handleSocialLink("https://www.cinepolisindia.com")} className="flex flex-col items-center">
+                <div className="w-9 h-9 rounded-full bg-[#3D1B78] flex items-center justify-center mb-1">
+                  <ExternalLink className="h-4 w-4 text-[#F9B233]" />
+                </div>
+                <span className="text-[10px] font-medium text-gray-600">Website</span>
+              </button>
+            </div>
 
-          {/* Powered By footer */}
-          <div className="flex items-center justify-center gap-1.5 py-2">
-            <span className="text-[10px] font-medium text-gray-400">Digital billing powered by</span>
-            <span className="text-[10px] font-bold" style={{ color: "#0B5D42" }}>SmartBill</span>
-            <span className="text-[10px] text-gray-300">×</span>
-            <img
-              src="/images/design-mode/Pine Labs Logo.png"
-              alt="Pine Labs"
-              className="h-3 w-auto"
-            />
+            {/* Powered By footer */}
+            <div className="flex items-center justify-center gap-1.5 pt-2 border-t border-gray-100">
+              <span className="text-[10px] font-medium text-gray-400">Digital billing powered by</span>
+              <span className="text-[10px] font-bold" style={{ color: "#0B5D42" }}>SmartBill</span>
+              <span className="text-[10px] text-gray-300">×</span>
+              <img
+                src="/images/design-mode/Pine Labs Logo.png"
+                alt="Pine Labs"
+                className="h-3 w-auto"
+              />
+            </div>
           </div>
 
           <div id="height-marker" style={{ height: "1px" }} />
