@@ -29,8 +29,36 @@ const fmt = (n: number) =>
 
 const APP_LINK = "https://onelink.to/bcvnnr"
 
+// Circular scalloped "PAID" stamp — brand purple
+function PaidStamp() {
+  return (
+    <svg viewBox="0 0 100 100" width="46" height="46" className="shrink-0" style={{ transform: "rotate(-8deg)" }}>
+      <defs>
+        <path id="ticketStampTopArc" d="M 12,50 A 38,38 0 1,1 88,50" fill="none" />
+        <path id="ticketStampBottomArc" d="M 12,52 A 38,38 0 1,0 88,52" fill="none" />
+      </defs>
+      <circle cx="50" cy="50" r="47" fill="none" stroke="#3D1B78" strokeWidth="2.5" strokeDasharray="3.2 3.2" />
+      <circle cx="50" cy="50" r="34" fill="none" stroke="#3D1B78" strokeWidth="1.3" />
+      <text fontSize="6.5" fontWeight="800" fill="#3D1B78" letterSpacing="1">
+        <textPath href="#ticketStampTopArc" startOffset="50%" textAnchor="middle">
+          THANK YOU
+        </textPath>
+      </text>
+      <text x="50" y="56" fontSize="17" fontWeight="900" fill="#3D1B78" textAnchor="middle" fontFamily="Poppins, sans-serif" letterSpacing="1">
+        PAID
+      </text>
+      <text fontSize="6.5" fontWeight="800" fill="#3D1B78" letterSpacing="1">
+        <textPath href="#ticketStampBottomArc" startOffset="50%" textAnchor="middle">
+          CINÉPOLIS
+        </textPath>
+      </text>
+    </svg>
+  )
+}
+
 export default function Home() {
   const [currentSlide, setCurrentSlide] = useState(0)
+  const [currentPosterSlide, setCurrentPosterSlide] = useState(0)
   const [showTerms, setShowTerms] = useState(false)
   const [showBookingHistory, setShowBookingHistory] = useState(false)
   const receiptContainerRef = useRef<HTMLDivElement>(null)
@@ -41,6 +69,7 @@ export default function Home() {
   const [currentBookingId, setCurrentBookingId] = useState("current")
 
   const [promoApi, setPromoApi] = useState<CarouselApi>()
+  const [posterApi, setPosterApi] = useState<CarouselApi>()
 
   useEffect(() => {
     if (!promoApi) return
@@ -56,6 +85,21 @@ export default function Home() {
       setCurrentSlide(promoApi.selectedScrollSnap())
     })
   }, [promoApi])
+
+  useEffect(() => {
+    if (!posterApi) return
+    const interval = setInterval(() => {
+      posterApi.scrollNext()
+    }, 4000)
+    return () => clearInterval(interval)
+  }, [posterApi])
+
+  useEffect(() => {
+    if (!posterApi) return
+    posterApi.on("select", () => {
+      setCurrentPosterSlide(posterApi.selectedScrollSnap())
+    })
+  }, [posterApi])
 
   // Simple auto-height for WordPress iframe
   useEffect(() => {
@@ -183,10 +227,11 @@ body{font-family:'Poppins',sans-serif;font-size:14px;color:#111;background:#fff;
 .movie-section p{font-size:12px;color:#666;}
 .items-table{width:100%;border-collapse:collapse;margin-bottom:24px;}
 .items-table th{background:#3D1B78;color:#F9B233;padding:10px 8px;text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:0.5px;}
+.items-table th:last-child, .items-table td:last-child{text-align:right;}
+.items-table th:nth-child(2), .items-table td:nth-child(2){text-align:center;}
 .items-table td{padding:12px 8px;border-bottom:1px solid #eee;font-size:12px;vertical-align:top;}
-.totals-table{text-align:right;min-width:220px;margin-left:auto;}
-.totals-table div{margin-bottom:6px;font-size:13px;}
-.net-total{font-size:18px;font-weight:700;color:#3D1B78;border-top:2px solid #F9B233;padding-top:6px;margin-top:6px;}
+.totals-row td{color:#666;font-size:12px;border-bottom:none;padding:6px 8px;}
+.net-total-row td{font-weight:700;color:#3D1B78;font-size:18px;border-top:2px solid #F9B233;padding:12px 8px 4px;}
 .footer{text-align:center;margin-top:30px;padding-top:20px;border-top:1px dashed #ccc;font-size:12px;color:#555;}
 .footer strong{color:#3D1B78;}
 @media print{body{-webkit-print-color-adjust:exact;width:100%;padding:0;}}
@@ -212,14 +257,12 @@ body{font-family:'Poppins',sans-serif;font-size:14px;color:#111;background:#fff;
   <thead><tr><th>Description</th><th>Qty</th><th>Amount</th></tr></thead>
   <tbody>
     <tr><td>Ticket Price</td><td>${currentBooking.ticketCount}</td><td>${fmt(currentBooking.ticketPrice)}</td></tr>
-    <tr><td>Net Ticket Price</td><td>-</td><td>${fmt(currentBooking.netTicketPrice)}</td></tr>
-    <tr><td>CGST (9%)</td><td>-</td><td>${fmt(currentBooking.cgst)}</td></tr>
-    <tr><td>SGST (9%)</td><td>-</td><td>${fmt(currentBooking.sgst)}</td></tr>
+    <tr class="totals-row"><td colspan="2">Net Ticket Price</td><td>${fmt(currentBooking.netTicketPrice)}</td></tr>
+    <tr class="totals-row"><td colspan="2">CGST (9%)</td><td>${fmt(currentBooking.cgst)}</td></tr>
+    <tr class="totals-row"><td colspan="2">SGST (9%)</td><td>${fmt(currentBooking.sgst)}</td></tr>
+    <tr class="net-total-row"><td colspan="2">Total Amount Paid</td><td>${fmt(currentBooking.total)}</td></tr>
   </tbody>
 </table>
-<div class="totals-table">
-  <div class="net-total">Total Amount Paid: ${fmt(currentBooking.total)}</div>
-</div>
 <div class="footer">
   <p><strong>Enjoy the show! See you again at Cinépolis.</strong></p>
   <p>GSTIN: ${currentBooking.gstin} | CIN: ${currentBooking.cin}</p>
@@ -263,8 +306,32 @@ body{font-family:'Poppins',sans-serif;font-size:14px;color:#111;background:#fff;
             <div className="text-xs font-semibold tracking-[0.15em] uppercase opacity-90">{currentBooking.cinema}</div>
           </div>
 
-          {/* Ticket Stub Card */}
-          <div className="bg-white rounded-2xl shadow-md border border-gray-200 mx-3 -mt-5 overflow-hidden relative">
+          {/* Movie Poster Carousel */}
+          <div className="mx-3 -mt-2 relative rounded-2xl overflow-hidden shadow-md border border-gray-200">
+            <Carousel className="w-full" setApi={setPosterApi} opts={{ loop: true }}>
+              <CarouselContent>
+                <CarouselItem>
+                  <div className="relative w-full aspect-[2/3] bg-gray-100">
+                    <Image src="/images/design-mode/poster-1.png" alt={`${currentBooking.movie} poster`} fill className="object-cover" priority />
+                  </div>
+                </CarouselItem>
+                <CarouselItem>
+                  <div className="relative w-full aspect-[2/3] bg-gray-100">
+                    <Image src="/images/design-mode/poster-2.png" alt={`${currentBooking.movie} poster`} fill className="object-cover" />
+                  </div>
+                </CarouselItem>
+              </CarouselContent>
+              <div className="absolute bottom-3 left-0 right-0 flex justify-center gap-1.5 z-10">
+                {[0, 1].map((index) => (
+                  <button key={index} onClick={() => posterApi?.scrollTo(index)}
+                    className={`h-1.5 rounded-full transition-all duration-300 ${currentPosterSlide === index ? "w-5 bg-[#F9B233]" : "w-1.5 bg-white/70"}`} />
+                ))}
+              </div>
+            </Carousel>
+          </div>
+
+          {/* Ticket Stub + Amount Breakup — merged card */}
+          <div className="bg-white rounded-2xl shadow-md border border-gray-200 mx-3 overflow-hidden relative">
 
             {/* Scan to Enter */}
             <div className="pt-6 pb-5 px-5 text-center">
@@ -309,7 +376,7 @@ body{font-family:'Poppins',sans-serif;font-size:14px;color:#111;background:#fff;
 
             {/* Movie / Booking Info */}
             <div className="px-5 pt-5 pb-6">
-              <div className="text-[10px] font-bold tracking-[0.15em] uppercase text-[#7742D8] mb-1">Now Showing</div>
+              <div className="text-[10px] font-bold tracking-[0.15em] uppercase text-[#7742D8] mb-1">Your Booking</div>
               <div className="text-lg font-bold text-gray-900 leading-snug">{currentBooking.movie}</div>
               <div className="text-xs text-gray-500 mt-0.5 mb-4">{currentBooking.certification} • {currentBooking.date} | {currentBooking.time}</div>
 
@@ -331,48 +398,33 @@ body{font-family:'Poppins',sans-serif;font-size:14px;color:#111;background:#fff;
                 </div>
               </div>
             </div>
-          </div>
 
-          {/* Cost Breakdown */}
-          <div className="bg-white rounded-2xl shadow-md border border-gray-200 mx-3 p-4">
-            <div className="text-[11px] font-semibold text-gray-400 uppercase tracking-wide mb-3">Amount Breakup</div>
-            <div className="space-y-2 text-sm">
-              <div className="flex justify-between"><span className="text-gray-600">Ticket Price</span><span>{fmt(currentBooking.ticketPrice)}</span></div>
-              <div className="flex justify-between"><span className="text-gray-600">Net Ticket Price</span><span>{fmt(currentBooking.netTicketPrice)}</span></div>
-              <div className="flex justify-between"><span className="text-gray-600">CGST (9%)</span><span>{fmt(currentBooking.cgst)}</span></div>
-              <div className="flex justify-between"><span className="text-gray-600">SGST (9%)</span><span>{fmt(currentBooking.sgst)}</span></div>
-              <div className="flex justify-between text-base font-bold pt-2 border-t border-gray-200">
-                <span className="text-gray-900">Total Amount Paid</span><span className="text-[#3D1B78]">{fmt(currentBooking.total)}</span>
+            {/* Second perforation / tear line before Amount Breakup */}
+            <div className="relative">
+              <div className="absolute -left-3 top-1/2 -translate-y-1/2 w-6 h-6 bg-gray-50 rounded-full" />
+              <div className="absolute -right-3 top-1/2 -translate-y-1/2 w-6 h-6 bg-gray-50 rounded-full" />
+              <div className="border-t-2 border-dashed border-gray-200 mx-6" />
+            </div>
+
+            {/* Amount Breakup — now part of the same card, brand purple */}
+            <div className="px-5 pt-5 pb-6">
+              <div className="text-[11px] font-bold text-[#7742D8] uppercase tracking-wide mb-3">Amount Breakup</div>
+              <div className="space-y-2 text-sm">
+                <div className="flex justify-between"><span className="text-[#6B5A94]">Ticket Price</span><span className="text-[#3D1B78] font-medium">{fmt(currentBooking.ticketPrice)}</span></div>
+                <div className="flex justify-between"><span className="text-[#6B5A94]">Net Ticket Price</span><span className="text-[#3D1B78] font-medium">{fmt(currentBooking.netTicketPrice)}</span></div>
+                <div className="flex justify-between"><span className="text-[#6B5A94]">CGST (9%)</span><span className="text-[#3D1B78] font-medium">{fmt(currentBooking.cgst)}</span></div>
+                <div className="flex justify-between pb-2 border-b border-[#E4D6F8]"><span className="text-[#6B5A94]">SGST (9%)</span><span className="text-[#3D1B78] font-medium">{fmt(currentBooking.sgst)}</span></div>
+              </div>
+
+              {/* Total Amount Paid — stamp to the left of amount */}
+              <div className="flex items-center justify-between pt-3">
+                <span className="text-base font-bold text-gray-900">Total Amount Paid</span>
+                <div className="flex items-center gap-2">
+                  <PaidStamp />
+                  <span className="text-lg font-bold text-[#3D1B78]">{fmt(currentBooking.total)}</span>
+                </div>
               </div>
             </div>
-          </div>
-
-          {/* Promo Banners — 1600x485 aspect ratio */}
-          <div className="bg-white rounded-2xl border border-gray-200 shadow-md overflow-hidden mx-3 relative">
-            <Carousel className="w-full" setApi={setPromoApi} opts={{ loop: true }}>
-              <CarouselContent>
-                <CarouselItem>
-                  <div className="relative w-full aspect-[1600/485] bg-[#F4EEFD]">
-                    <a href="https://www.instagram.com/cinepolisindia/?hl=en" target="_blank" rel="noopener noreferrer" className="absolute inset-0">
-                      <Image src="/images/design-mode/cinepolis-ticket-banner-1.png" alt="Now Showing at Cinépolis" fill className="object-cover" priority />
-                    </a>
-                  </div>
-                </CarouselItem>
-                <CarouselItem>
-                  <div className="relative w-full aspect-[1600/485] bg-[#F4EEFD]">
-                    <a href="https://www.instagram.com/cinepolisindia/?hl=en" target="_blank" rel="noopener noreferrer" className="absolute inset-0">
-                      <Image src="/images/design-mode/cinepolis-ticket-banner-2.png" alt="Cinépolis Promotion" fill className="object-cover" />
-                    </a>
-                  </div>
-                </CarouselItem>
-              </CarouselContent>
-              <div className="absolute bottom-3 left-0 right-0 flex justify-center gap-1.5 z-10">
-                {[0, 1].map((index) => (
-                  <button key={index} onClick={() => promoApi?.scrollTo(index)}
-                    className={`h-1.5 rounded-full transition-all duration-300 ${currentSlide === index ? "w-5 bg-[#F9B233]" : "w-1.5 bg-white/70"}`} />
-                ))}
-              </div>
-            </Carousel>
           </div>
 
           {/* Rate Experience */}
@@ -434,6 +486,13 @@ body{font-family:'Poppins',sans-serif;font-size:14px;color:#111;background:#fff;
                 </button>
               </div>
             )}
+          </div>
+
+          {/* Promo Banner — single banner, moved below Rate Experience */}
+          <div className="bg-white rounded-2xl border border-gray-200 shadow-md overflow-hidden mx-3 relative">
+            <a href="https://www.instagram.com/cinepolisindia/?hl=en" target="_blank" rel="noopener noreferrer" className="block relative w-full aspect-[1600/485] bg-[#F4EEFD]">
+              <Image src="/images/design-mode/cinepolis-ticket-banner-2.png" alt="Cinépolis Promotion" fill className="object-cover" />
+            </a>
           </div>
 
           {/* Download App CTA */}
