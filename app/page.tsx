@@ -16,10 +16,8 @@ import {
   Ticket,
   Film,
   Armchair,
-  QrCode,
   Smartphone,
   LifeBuoy,
-  Zap,
   ScanLine,
 } from "lucide-react"
 
@@ -53,25 +51,6 @@ function PaidStamp() {
         </textPath>
       </text>
     </svg>
-  )
-}
-
-// Repeats the small ticket.png notch tile vertically down one edge of the card.
-// The tile itself never stretches — it just repeats (tiles) as many times as needed
-// to cover the card's full height, so it works no matter how tall the card grows.
-function TicketNotchStrip({ side }: { side: "left" | "right" }) {
-  return (
-    <div
-      className="absolute top-0 bottom-0 w-3 z-20 pointer-events-none"
-      style={{
-        [side]: 0,
-        backgroundImage: "url(/images/design-mode/ticket.png)",
-        backgroundRepeat: "repeat-y",
-        backgroundSize: "12px 22px",
-        backgroundPosition: side === "left" ? "left top" : "right top",
-        transform: side === "right" ? "scaleX(-1)" : "none",
-      }}
-    />
   )
 }
 
@@ -306,6 +285,16 @@ body{font-family:'Poppins',sans-serif;font-size:14px;color:#111;background:#fff;
   const handleEmail = () => window.open("mailto:sagar.p@proenx.com", "_blank")
   const handleSocialLink = (url: string) => window.open(url, "_blank")
 
+  // Semi-circle ticket punch-hole notch mask
+  const ticketNotchStyle: React.CSSProperties = {
+    WebkitMaskImage:
+      "radial-gradient(circle 12px at 0 355px, transparent 12px, black 12.5px), radial-gradient(circle 12px at 100% 355px, transparent 12px, black 12.5px), radial-gradient(circle 12px at 0 535px, transparent 12px, black 12.5px), radial-gradient(circle 12px at 100% 535px, transparent 12px, black 12.5px)",
+    WebkitMaskComposite: "destination-in, source-over",
+    maskImage:
+      "radial-gradient(circle 12px at 0 355px, transparent 12px, black 12.5px), radial-gradient(circle 12px at 100% 355px, transparent 12px, black 12.5px), radial-gradient(circle 12px at 0 535px, transparent 12px, black 12.5px), radial-gradient(circle 12px at 100% 535px, transparent 12px, black 12.5px)",
+    maskComposite: "intersect",
+  }
+
   return (
     <div className="min-h-screen bg-gray-50 flex justify-center">
       <div
@@ -314,7 +303,6 @@ body{font-family:'Poppins',sans-serif;font-size:14px;color:#111;background:#fff;
         className="w-full max-w-md mx-auto bg-white shadow-lg relative overflow-hidden font-poppins"
       >
         <div className="flex flex-col w-full gap-3 pb-4 px-3">
-
           {/* Header */}
           <div className="bg-gradient-to-br from-[#3D1B78] via-[#5B2A9E] to-[#7742D8] px-5 pt-6 pb-8 mt-4 mx-3 rounded-2xl text-center text-white">
             <img
@@ -349,15 +337,12 @@ body{font-family:'Poppins',sans-serif;font-size:14px;color:#111;background:#fff;
             </Carousel>
           </div>
 
-          {/* Ticket Stub + Amount Breakup — punched-notch movie-ticket card (image-tile notches) */}
+          {/* Vertical Movie Ticket Card with Side Punch Holes */}
           <div
-            className="bg-white shadow-md border border-gray-200 mx-3 relative"
-            style={{ borderRadius: "20px" }}
+            className="bg-white rounded-2xl shadow-md border border-gray-200 mx-3 relative overflow-hidden"
+            style={ticketNotchStyle}
           >
-            <TicketNotchStrip side="left" />
-            <TicketNotchStrip side="right" />
-
-            {/* Scan to Enter */}
+            {/* Upper Stub: Scan to Enter */}
             <div className="pt-6 pb-5 px-5 text-center">
               <span className="inline-block bg-[#F9B233] text-black text-[10px] font-bold tracking-wide uppercase px-3 py-1 rounded-full mb-4">
                 <ScanLine className="inline h-3 w-3 mr-1 -mt-0.5" />
@@ -365,7 +350,7 @@ body{font-family:'Poppins',sans-serif;font-size:14px;color:#111;background:#fff;
               </span>
 
               <div className="flex justify-center">
-                <div className="p-3 border-2 border-[#F9B233] rounded-2xl">
+                <div className="p-3 border-2 border-[#F9B233] rounded-2xl bg-white">
                   <Image
                     src="/images/design-mode/800px-QR_code_for_mobile_English_Wikipedia.svg.png"
                     alt="QR Code"
@@ -391,10 +376,10 @@ body{font-family:'Poppins',sans-serif;font-size:14px;color:#111;background:#fff;
               </div>
             </div>
 
-            {/* Perforation / tear line */}
-            <div className="border-t-2 border-dashed border-gray-200 mx-6" />
+            {/* Perforation / tear line 1 */}
+            <div className="border-t-2 border-dashed border-gray-200 mx-6 relative z-10" />
 
-            {/* Movie / Booking Info */}
+            {/* Middle Stub: Movie / Booking Details */}
             <div className="px-5 pt-5 pb-6">
               <div className="text-[10px] font-bold tracking-[0.15em] uppercase text-[#7742D8] mb-1">Your Booking</div>
               <div className="text-lg font-bold text-gray-900 leading-snug">{currentBooking.movie}</div>
@@ -419,10 +404,10 @@ body{font-family:'Poppins',sans-serif;font-size:14px;color:#111;background:#fff;
               </div>
             </div>
 
-            {/* Second perforation / tear line before Amount Breakup */}
-            <div className="border-t-2 border-dashed border-gray-200 mx-6" />
+            {/* Perforation / tear line 2 */}
+            <div className="border-t-2 border-dashed border-gray-200 mx-6 relative z-10" />
 
-            {/* Amount Breakup — brand purple */}
+            {/* Lower Stub: Amount Breakup */}
             <div className="px-5 pt-5 pb-6">
               <div className="text-[11px] font-bold text-[#7742D8] uppercase tracking-wide mb-3">Amount Breakup</div>
               <div className="space-y-2 text-sm">
@@ -432,7 +417,7 @@ body{font-family:'Poppins',sans-serif;font-size:14px;color:#111;background:#fff;
                 <div className="flex justify-between pb-2 border-b border-[#E4D6F8]"><span className="text-[#6B5A94]">SGST (9%)</span><span className="text-[#3D1B78] font-medium">{fmt(currentBooking.sgst)}</span></div>
               </div>
 
-              {/* Total Amount Paid — stamp to the left of amount */}
+              {/* Total Amount Paid */}
               <div className="flex items-center justify-between pt-3">
                 <span className="text-base font-bold text-gray-900">Total Amount Paid</span>
                 <div className="flex items-center gap-2">
@@ -504,7 +489,7 @@ body{font-family:'Poppins',sans-serif;font-size:14px;color:#111;background:#fff;
             )}
           </div>
 
-          {/* Promo Banner — single banner, moved below Rate Experience */}
+          {/* Promo Banner */}
           <div className="bg-white rounded-2xl border border-gray-200 shadow-md overflow-hidden mx-3 relative">
             <a href="https://www.instagram.com/cinepolisindia/?hl=en" target="_blank" rel="noopener noreferrer" className="block relative w-full aspect-[1600/485] bg-[#F4EEFD]">
               <Image src="/images/design-mode/cinepolis-ticket-banner-2.png" alt="Cinépolis Promotion" fill className="object-cover" />
@@ -550,7 +535,7 @@ body{font-family:'Poppins',sans-serif;font-size:14px;color:#111;background:#fff;
             </div>
           </div>
 
-          {/* Help row — Terms & Need Help */}
+          {/* Help row */}
           <div className="mx-3 grid grid-cols-2 gap-3">
             <button onClick={() => setShowTerms(!showTerms)}
               className="bg-white border border-gray-200 rounded-full py-2.5 text-xs font-semibold text-gray-700 shadow-sm active:scale-[0.98]">
@@ -600,7 +585,7 @@ body{font-family:'Poppins',sans-serif;font-size:14px;color:#111;background:#fff;
             </button>
           </div>
 
-          {/* Powered By footer — Pine Labs logo + SmartBill in Pine Labs green */}
+          {/* Powered By footer */}
           <div className="flex items-center justify-center gap-1.5 py-2">
             <span className="text-[10px] font-medium text-gray-400">Digital billing powered by</span>
             <span className="text-[10px] font-bold" style={{ color: "#0B5D42" }}>SmartBill</span>
