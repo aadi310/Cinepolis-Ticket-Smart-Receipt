@@ -99,7 +99,7 @@ export default function Home() {
     })
   }, [posterApi])
 
-  // Simple auto-height for WordPress iframe
+  // Auto-height for WordPress iframe
   useEffect(() => {
     const postHeight = () => {
       const marker = document.getElementById("height-marker")
@@ -282,29 +282,19 @@ body{font-family:'Poppins',sans-serif;font-size:14px;color:#111;background:#fff;
 
   const handleDownloadApp = () => window.open(APP_LINK, "_blank")
   const handleNeedHelp = () => window.open("https://wa.me/+919620921294", "_blank")
-  const handleEmail = () => window.open("mailto:sagar.p@proenx.com", "_blank")
   const handleSocialLink = (url: string) => window.open(url, "_blank")
 
-  // Semi-circle ticket punch-hole notch mask
-  const ticketNotchStyle: React.CSSProperties = {
-    WebkitMaskImage:
-      "radial-gradient(circle 12px at 0 355px, transparent 12px, black 12.5px), radial-gradient(circle 12px at 100% 355px, transparent 12px, black 12.5px), radial-gradient(circle 12px at 0 535px, transparent 12px, black 12.5px), radial-gradient(circle 12px at 100% 535px, transparent 12px, black 12.5px)",
-    WebkitMaskComposite: "destination-in, source-over",
-    maskImage:
-      "radial-gradient(circle 12px at 0 355px, transparent 12px, black 12.5px), radial-gradient(circle 12px at 100% 355px, transparent 12px, black 12.5px), radial-gradient(circle 12px at 0 535px, transparent 12px, black 12.5px), radial-gradient(circle 12px at 100% 535px, transparent 12px, black 12.5px)",
-    maskComposite: "intersect",
-  }
-
   return (
-    <div className="min-h-screen bg-gray-50 flex justify-center">
+    // Slightly darker container background (#E8EAEF) so punch holes show clearly
+    <div className="min-h-screen bg-[#E8EAEF] flex justify-center py-4">
       <div
         id="receipt-root"
         ref={receiptContainerRef}
-        className="w-full max-w-md mx-auto bg-white shadow-lg relative overflow-hidden font-poppins"
+        className="w-full max-w-md mx-auto bg-[#E8EAEF] relative font-poppins"
       >
         <div className="flex flex-col w-full gap-3 pb-4 px-3">
           {/* Header */}
-          <div className="bg-gradient-to-br from-[#3D1B78] via-[#5B2A9E] to-[#7742D8] px-5 pt-6 pb-8 mt-4 mx-3 rounded-2xl text-center text-white">
+          <div className="bg-gradient-to-br from-[#3D1B78] via-[#5B2A9E] to-[#7742D8] px-5 pt-6 pb-8 mx-3 rounded-2xl text-center text-white shadow-sm">
             <img
               src="/images/design-mode/cinepolis.png"
               alt="Cinépolis"
@@ -337,94 +327,107 @@ body{font-family:'Poppins',sans-serif;font-size:14px;color:#111;background:#fff;
             </Carousel>
           </div>
 
-          {/* Vertical Movie Ticket Card with Side Punch Holes */}
-          <div
-            className="bg-white rounded-2xl shadow-md border border-gray-200 mx-3 relative overflow-hidden"
-            style={ticketNotchStyle}
-          >
-            {/* Upper Stub: Scan to Enter */}
-            <div className="pt-6 pb-5 px-5 text-center">
-              <span className="inline-block bg-[#F9B233] text-black text-[10px] font-bold tracking-wide uppercase px-3 py-1 rounded-full mb-4">
-                <ScanLine className="inline h-3 w-3 mr-1 -mt-0.5" />
-                Scan to Enter
-              </span>
+          {/* Vertical Movie Ticket Card with Physical Punch Cutouts */}
+          <div className="mx-3 relative filter drop-shadow-md">
+            <div className="bg-white rounded-2xl border border-gray-200 relative overflow-hidden">
+              
+              {/* Top Section / QR Code */}
+              <div className="pt-6 pb-5 px-5 text-center relative">
+                <span className="inline-block bg-[#F9B233] text-black text-[10px] font-bold tracking-wide uppercase px-3 py-1 rounded-full mb-4">
+                  <ScanLine className="inline h-3 w-3 mr-1 -mt-0.5" />
+                  Scan to Enter
+                </span>
 
-              <div className="flex justify-center">
-                <div className="p-3 border-2 border-[#F9B233] rounded-2xl bg-white">
-                  <Image
-                    src="/images/design-mode/800px-QR_code_for_mobile_English_Wikipedia.svg.png"
-                    alt="QR Code"
-                    width={160}
-                    height={160}
-                  />
+                <div className="flex justify-center">
+                  <div className="p-3 border-2 border-[#F9B233] rounded-2xl bg-white">
+                    <Image
+                      src="/images/design-mode/800px-QR_code_for_mobile_English_Wikipedia.svg.png"
+                      alt="QR Code"
+                      width={160}
+                      height={160}
+                    />
+                  </div>
+                </div>
+
+                <div className="mt-4 bg-[#F4EEFD] border border-[#DCC7F5] rounded-xl px-3 py-2.5 text-[11px] text-[#3D1B78] font-medium">
+                  Show this QR code at the entrance of the cinema to enter the show.
+                </div>
+
+                <div className="mt-4 flex justify-center gap-8 text-left">
+                  <div>
+                    <div className="text-[10px] text-gray-400 uppercase tracking-wide">Booking ID</div>
+                    <div className="text-xs font-semibold text-gray-900">{currentBooking.bookingId}</div>
+                  </div>
+                  <div>
+                    <div className="text-[10px] text-gray-400 uppercase tracking-wide">Invoice No.</div>
+                    <div className="text-xs font-semibold text-gray-900">{currentBooking.invoiceNo}</div>
+                  </div>
                 </div>
               </div>
 
-              <div className="mt-4 bg-[#F4EEFD] border border-[#DCC7F5] rounded-xl px-3 py-2.5 text-[11px] text-[#3D1B78] font-medium">
-                Show this QR code at the entrance of the cinema to enter the show.
+              {/* Perforation Line 1 with Direct Punch-Holes */}
+              <div className="relative flex items-center my-1">
+                {/* Left Hole */}
+                <div className="w-5 h-5 bg-[#E8EAEF] rounded-full -ml-2.5 shadow-inner border-r border-gray-300/60 shrink-0 z-10" />
+                <div className="flex-1 border-t-2 border-dashed border-gray-300 mx-2" />
+                {/* Right Hole */}
+                <div className="w-5 h-5 bg-[#E8EAEF] rounded-full -mr-2.5 shadow-inner border-l border-gray-300/60 shrink-0 z-10" />
               </div>
 
-              <div className="mt-4 flex justify-center gap-8 text-left">
-                <div>
-                  <div className="text-[10px] text-gray-400 uppercase tracking-wide">Booking ID</div>
-                  <div className="text-xs font-semibold text-gray-900">{currentBooking.bookingId}</div>
-                </div>
-                <div>
-                  <div className="text-[10px] text-gray-400 uppercase tracking-wide">Invoice No.</div>
-                  <div className="text-xs font-semibold text-gray-900">{currentBooking.invoiceNo}</div>
-                </div>
-              </div>
-            </div>
+              {/* Middle Section / Movie Details */}
+              <div className="px-5 pt-4 pb-5 relative">
+                <div className="text-[10px] font-bold tracking-[0.15em] uppercase text-[#7742D8] mb-1">Your Booking</div>
+                <div className="text-lg font-bold text-gray-900 leading-snug">{currentBooking.movie}</div>
+                <div className="text-xs text-gray-500 mt-0.5 mb-4">{currentBooking.certification} • {currentBooking.date} | {currentBooking.time}</div>
 
-            {/* Perforation / tear line 1 */}
-            <div className="border-t-2 border-dashed border-gray-200 mx-6 relative z-10" />
-
-            {/* Middle Stub: Movie / Booking Details */}
-            <div className="px-5 pt-5 pb-6">
-              <div className="text-[10px] font-bold tracking-[0.15em] uppercase text-[#7742D8] mb-1">Your Booking</div>
-              <div className="text-lg font-bold text-gray-900 leading-snug">{currentBooking.movie}</div>
-              <div className="text-xs text-gray-500 mt-0.5 mb-4">{currentBooking.certification} • {currentBooking.date} | {currentBooking.time}</div>
-
-              <div className="grid grid-cols-3 gap-2 text-center">
-                <div className="bg-gray-50 rounded-xl p-2.5 border border-gray-200">
-                  <Film className="h-4 w-4 text-[#7742D8] mx-auto mb-1" />
-                  <div className="text-[10px] text-gray-500">Screen</div>
-                  <div className="text-sm font-semibold text-gray-900">{currentBooking.screen}</div>
-                </div>
-                <div className="bg-gray-50 rounded-xl p-2.5 border border-gray-200">
-                  <Armchair className="h-4 w-4 text-[#7742D8] mx-auto mb-1" />
-                  <div className="text-[10px] text-gray-500">Seats</div>
-                  <div className="text-sm font-semibold text-gray-900">{currentBooking.seats}</div>
-                </div>
-                <div className="bg-gray-50 rounded-xl p-2.5 border border-gray-200">
-                  <Ticket className="h-4 w-4 text-[#7742D8] mx-auto mb-1" />
-                  <div className="text-[10px] text-gray-500">Tickets</div>
-                  <div className="text-sm font-semibold text-gray-900">{currentBooking.ticketCount}</div>
+                <div className="grid grid-cols-3 gap-2 text-center">
+                  <div className="bg-gray-50 rounded-xl p-2.5 border border-gray-200">
+                    <Film className="h-4 w-4 text-[#7742D8] mx-auto mb-1" />
+                    <div className="text-[10px] text-gray-500">Screen</div>
+                    <div className="text-sm font-semibold text-gray-900">{currentBooking.screen}</div>
+                  </div>
+                  <div className="bg-gray-50 rounded-xl p-2.5 border border-gray-200">
+                    <Armchair className="h-4 w-4 text-[#7742D8] mx-auto mb-1" />
+                    <div className="text-[10px] text-gray-500">Seats</div>
+                    <div className="text-sm font-semibold text-gray-900">{currentBooking.seats}</div>
+                  </div>
+                  <div className="bg-gray-50 rounded-xl p-2.5 border border-gray-200">
+                    <Ticket className="h-4 w-4 text-[#7742D8] mx-auto mb-1" />
+                    <div className="text-[10px] text-gray-500">Tickets</div>
+                    <div className="text-sm font-semibold text-gray-900">{currentBooking.ticketCount}</div>
+                  </div>
                 </div>
               </div>
-            </div>
 
-            {/* Perforation / tear line 2 */}
-            <div className="border-t-2 border-dashed border-gray-200 mx-6 relative z-10" />
-
-            {/* Lower Stub: Amount Breakup */}
-            <div className="px-5 pt-5 pb-6">
-              <div className="text-[11px] font-bold text-[#7742D8] uppercase tracking-wide mb-3">Amount Breakup</div>
-              <div className="space-y-2 text-sm">
-                <div className="flex justify-between"><span className="text-[#6B5A94]">Ticket Price</span><span className="text-[#3D1B78] font-medium">{fmt(currentBooking.ticketPrice)}</span></div>
-                <div className="flex justify-between"><span className="text-[#6B5A94]">Net Ticket Price</span><span className="text-[#3D1B78] font-medium">{fmt(currentBooking.netTicketPrice)}</span></div>
-                <div className="flex justify-between"><span className="text-[#6B5A94]">CGST (9%)</span><span className="text-[#3D1B78] font-medium">{fmt(currentBooking.cgst)}</span></div>
-                <div className="flex justify-between pb-2 border-b border-[#E4D6F8]"><span className="text-[#6B5A94]">SGST (9%)</span><span className="text-[#3D1B78] font-medium">{fmt(currentBooking.sgst)}</span></div>
+              {/* Perforation Line 2 with Direct Punch-Holes */}
+              <div className="relative flex items-center my-1">
+                {/* Left Hole */}
+                <div className="w-5 h-5 bg-[#E8EAEF] rounded-full -ml-2.5 shadow-inner border-r border-gray-300/60 shrink-0 z-10" />
+                <div className="flex-1 border-t-2 border-dashed border-gray-300 mx-2" />
+                {/* Right Hole */}
+                <div className="w-5 h-5 bg-[#E8EAEF] rounded-full -mr-2.5 shadow-inner border-l border-gray-300/60 shrink-0 z-10" />
               </div>
 
-              {/* Total Amount Paid */}
-              <div className="flex items-center justify-between pt-3">
-                <span className="text-base font-bold text-gray-900">Total Amount Paid</span>
-                <div className="flex items-center gap-2">
-                  <PaidStamp />
-                  <span className="text-lg font-bold text-[#3D1B78]">{fmt(currentBooking.total)}</span>
+              {/* Bottom Section / Amount Breakup */}
+              <div className="px-5 pt-4 pb-6 relative">
+                <div className="text-[11px] font-bold text-[#7742D8] uppercase tracking-wide mb-3">Amount Breakup</div>
+                <div className="space-y-2 text-sm">
+                  <div className="flex justify-between"><span className="text-[#6B5A94]">Ticket Price</span><span className="text-[#3D1B78] font-medium">{fmt(currentBooking.ticketPrice)}</span></div>
+                  <div className="flex justify-between"><span className="text-[#6B5A94]">Net Ticket Price</span><span className="text-[#3D1B78] font-medium">{fmt(currentBooking.netTicketPrice)}</span></div>
+                  <div className="flex justify-between"><span className="text-[#6B5A94]">CGST (9%)</span><span className="text-[#3D1B78] font-medium">{fmt(currentBooking.cgst)}</span></div>
+                  <div className="flex justify-between pb-2 border-b border-[#E4D6F8]"><span className="text-[#6B5A94]">SGST (9%)</span><span className="text-[#3D1B78] font-medium">{fmt(currentBooking.sgst)}</span></div>
+                </div>
+
+                {/* Total Amount Paid */}
+                <div className="flex items-center justify-between pt-3">
+                  <span className="text-base font-bold text-gray-900">Total Amount Paid</span>
+                  <div className="flex items-center gap-2">
+                    <PaidStamp />
+                    <span className="text-lg font-bold text-[#3D1B78]">{fmt(currentBooking.total)}</span>
+                  </div>
                 </div>
               </div>
+
             </div>
           </div>
 
