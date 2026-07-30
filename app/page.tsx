@@ -71,6 +71,40 @@ function PaidStamp() {
   )
 }
 
+function TicketClipDefs() {
+  // Generates a scalloped-edge clip-path with notches every 22px down both sides.
+  // cardHeight should roughly match the actual rendered card height.
+  const notchRadius = 7
+  const spacing = 22
+  const cardHeight = 900 // generous estimate; SVG viewBox scales to container via preserveAspectRatio="none"
+
+  const notchCount = Math.ceil(cardHeight / spacing)
+  let leftPath = `M 0,0 `
+  let rightPath = ``
+
+  for (let i = 0; i <= notchCount; i++) {
+    const y = i * spacing
+    leftPath += `L 0,${y - notchRadius} A ${notchRadius},${notchRadius} 0 0 0 0,${y + notchRadius} `
+  }
+  leftPath += `L 0,${cardHeight} L 1000,${cardHeight} `
+
+  for (let i = notchCount; i >= 0; i--) {
+    const y = i * spacing
+    rightPath += `L 1000,${y + notchRadius} A ${notchRadius},${notchRadius} 0 0 0 1000,${y - notchRadius} `
+  }
+  rightPath += `L 1000,0 Z`
+
+  return (
+    <svg width="0" height="0" style={{ position: "absolute" }}>
+      <defs>
+        <clipPath id="ticketNotchClip" clipPathUnits="userSpaceOnUse">
+          <path d={leftPath + rightPath} />
+        </clipPath>
+      </defs>
+    </svg>
+  )
+}
+
 export default function Home() {
   const [currentSlide, setCurrentSlide] = useState(0)
   const [currentPosterSlide, setCurrentPosterSlide] = useState(0)
@@ -311,6 +345,8 @@ body{font-family:'Poppins',sans-serif;font-size:14px;color:#111;background:#fff;
       >
         <div className="flex flex-col w-full gap-3 pb-4 px-3">
 
+            <TicketClipDefs />
+
           {/* Header */}
           <div className="bg-gradient-to-br from-[#3D1B78] via-[#5B2A9E] to-[#7742D8] px-5 pt-6 pb-8 mt-4 mx-3 rounded-2xl text-center text-white">
             <img
@@ -348,7 +384,7 @@ body{font-family:'Poppins',sans-serif;font-size:14px;color:#111;background:#fff;
           {/* Ticket Stub + Amount Breakup — punched-notch movie-ticket card (real CSS mask cut) */}
           <div
             className="bg-white shadow-md border border-gray-200 mx-3 relative"
-            style={{ ...ticketNotchMask, borderRadius: "20px" }}
+              style={{ clipPath: "url(#ticketNotchClip)", borderRadius: "20px" }}
           >
             {/* Scan to Enter */}
             <div className="pt-6 pb-5 px-5 text-center">
